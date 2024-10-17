@@ -19,19 +19,101 @@ jobs:
       # Définir la branche 'beta' pour les pre-releases
       prerelease-branches: "^(dev)$"
 
-  build:
-    # Nom du job qui gère la construction du projet Rust
-    name:  build
-    # Exécute le job sur une machine virtuelle Ubuntu
+ jobs:
+  # Job pour construire le back-end Java
+  build-backend:
+    name: Build Java Backend
     runs-on: ubuntu-latest
-    # Condition : si la version sera release, ce job sera exécuté
-    if: ${{ needs.get-version.outputs.will-release == 'true' }}
-    # Ce job dépend du job 'get-version'
-    needs:
-      - get-version
-
-
     steps:
-      # Récupération du code source du dépôt
-      - name: Checkout
+      # Étape 1 : Récupérer le code source
+      - name: Checkout code
         uses: actions/checkout@v2
+      
+      # Étape 2 : Configurer JDK 17
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Étape 3 : Construire le projet Java avec Gradle
+      - name: Build backend with Gradle
+        run: ./gradlew build
+
+      # Étape 4 : Sauvegarder les artefacts du back-end (le fichier JAR)
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend
+          path: build/libs/*.jar
+
+  # Job pour construire le front-end React
+  build-frontend:
+    name: Build React Frontend
+    runs-on: ubuntu-latest
+    steps:
+      # Étape 1 : Récupérer le code source
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      # Étape 2 : Configurer Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # Étape 3 : Installer les dépendances du front-end
+      - name: Install dependencies
+        run: npm install
+      
+      # Étape 4 : Construire le projet React
+      - name: Build frontend
+        run: npm run build
+
+      # Étape 5 : Sauvegarder les artefacts du front-end (fichiers de build)
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend
+          path: build/
+
+  # Job pour publier la release sur GitHub
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    steps:
+      # Étape 1 : Télécharger les artefacts du back-end
+      - name: Download backend artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: backend
+          path: backend/
+
+      # Étape 2 : Télécharger les artefacts du front-end
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend
+          path: frontend/
+
+      # Étape 3 : Créer une archive ZIP des artefacts pour les inclure dans la release
+      - name: Zip files artifacts
+        run: zip -r release.zip backend/* frontend/*
+
+      # Étape 4 : Créer la release sur GitHub
+      - name: Create GitHub Release
+        env:
+          VERSION: "${{ needs.get-version.outputs.version }}"
+          REPO: "${{ github.repository }}"
+          COMMIT: "${{ github.sha }}"
+          GH_TOKEN: "${{ github.token }}"
+          PRERELEASE: ${{ needs.get-version.outputs.is-prerelease }}
+          CHANGELOG: ${{ needs.get-version.outputs.changelogs }}
+        run: |
+               echo "$CHANGELOG" > changelog.md
+            if [ "$PRERELEASE" == "true" ]; then
+              gh release create --prerelease --repo $REPO --target $COMMIT -F changelog.md "v$VERSION" "Auto-generated release"
+            else
+              gh release create --repo $REPO --target $COMMIT -F changelog.md "v$VERSION" "Auto-generated release"
+            fi
