@@ -1,0 +1,37 @@
+on:
+  push:
+    # Déclenche le workflow lorsque des modifications sont poussées sur les branches 'main' ou 'beta'
+    branches:
+      - main
+      - dev
+
+permissions:
+  # Accord de permission pour écrire des contenus dans le dépôt
+  contents: write
+
+jobs:
+  get-version:
+    # Utilise un workflow externe pour obtenir la version actuelle basée sur les branches de release et prerelease
+    uses: shiipou/github-actions/.github/workflows/get-version.yml@main
+    with:
+      # Définir la branche 'main' pour les releases officielles
+      release-branches: '^(main)$'
+      # Définir la branche 'beta' pour les pre-releases
+      prerelease-branches: "^(dev)$"
+
+  build:
+    # Nom du job qui gère la construction du projet Rust
+    name:  build
+    # Exécute le job sur une machine virtuelle Ubuntu
+    runs-on: ubuntu-latest
+    # Condition : si la version sera release, ce job sera exécuté
+    if: ${{ needs.get-version.outputs.will-release == 'true' }}
+    # Ce job dépend du job 'get-version'
+    needs:
+      - get-version
+
+
+    steps:
+      # Récupération du code source du dépôt
+      - name: Checkout
+        uses: actions/checkout@v2
