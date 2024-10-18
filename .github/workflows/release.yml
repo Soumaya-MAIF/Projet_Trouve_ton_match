@@ -68,7 +68,7 @@ jobs:
 
       # Étape 2 : Changer de répertoire vers le bon dossier du projet React
       - name: Change directory to frontend
-        run: cd ./ttm/front
+        run: cd ./front
       
       # Étape 2 : Configurer Node.js
       - name: Setup Node.js environment
