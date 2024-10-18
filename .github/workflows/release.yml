@@ -21,6 +21,43 @@ jobs:
       # Définir la branche 'beta' pour les pre-releases
       prerelease-branches: '^(dev|53-24-mise-en-place-de-la-ci)$'
 
+  test:
+    name: Spring test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    services:
+      # Label used to access the service container
+      db:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_DB: app
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: securePassword
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build with Gradle
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/app
+          SPRING_DATASOURCE_USERNAME: user
+          SPRING_DATASOURCE_PASSWORD: securePassword
+        run: chmod +x gradlew && ./gradlew test
+
   # Job pour construire le back-end Java
   build-backend:
     name: Build Java Backend
