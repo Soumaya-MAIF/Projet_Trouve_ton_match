@@ -56,7 +56,7 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/app
           SPRING_DATASOURCE_USERNAME: user
           SPRING_DATASOURCE_PASSWORD: securePassword
-        run: chmod +x gradlew && ./gradlew test
+        run: ./gradlew test
 
   # Job pour construire le back-end Java
   build-backend:
@@ -72,8 +72,8 @@ jobs:
 
       # Étape 2 pour donner les permissions d'exécution à gradlew
       - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-      
+        run: ./gradlew
+
       # Étape 3 : Configurer JDK 17
       - name: Setup Java JDK
         uses: actions/setup-java@v4.4.0
