@@ -111,7 +111,7 @@ jobs:
           PRERELEASE: ${{ needs.get-version.outputs.is-prerelease }}
           CHANGELOG: ${{ needs.get-version.outputs.changelogs }}
         run: |
-               echo "$CHANGELOG" > changelog.md
+            echo "$CHANGELOG" > changelog.md
             if [ "$PRERELEASE" == "true" ]; then
               gh release create --prerelease --repo $REPO --target $COMMIT -F changelog.md "v$VERSION" "Auto-generated release"
             else
