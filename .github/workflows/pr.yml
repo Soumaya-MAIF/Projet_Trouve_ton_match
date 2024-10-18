@@ -39,4 +39,3 @@ jobs:
           SPRING_DATASOURCE_USERNAME: user
           SPRING_DATASOURCE_PASSWORD: securePassword
         run: ./gradlew test
-
