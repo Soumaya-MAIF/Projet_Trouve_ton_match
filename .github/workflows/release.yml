@@ -89,7 +89,7 @@ jobs:
   release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [build-backend, build-frontend]
+    needs: [build-backend, build-frontend, get-version]
     steps:
       # Étape 1 : Télécharger les artefacts du back-end
       - name: Download backend artifact
