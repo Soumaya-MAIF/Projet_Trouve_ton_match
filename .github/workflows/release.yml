@@ -95,18 +95,18 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: backend
-          path: backend/
+          path: artifacts/backend
 
       # Étape 2 : Télécharger les artefacts du front-end
       - name: Download frontend artifact
         uses: actions/download-artifact@v3
         with:
           name: frontend
-          path: frontend/
+          path: artifacts/frontend
 
       # Étape 3 : Créer une archive ZIP des artefacts pour les inclure dans la release
       - name: Zip files artifacts
-        run: zip -r release.zip backend/* frontend/*
+        run: zip -r release.zip artifacts/backend/* artifacts/frontend/*
 
       # Étape 4 : Créer la release sur GitHub
       - name: Create GitHub Release
