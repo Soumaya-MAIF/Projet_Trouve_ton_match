@@ -61,6 +61,10 @@ jobs:
       # Étape 1 : Récupérer le code source
       - name: Checkout code
         uses: actions/checkout@v2
+
+      # Étape 2 : Changer de répertoire vers le bon dossier du projet React
+      - name: Change directory to frontend
+        run: cd ./ttm/front/src
       
       # Étape 2 : Configurer Node.js
       - name: Setup Node.js environment
