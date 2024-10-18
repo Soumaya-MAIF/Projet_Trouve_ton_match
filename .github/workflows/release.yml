@@ -97,6 +97,9 @@ jobs:
   build-frontend:
     name: Build React Frontend
     runs-on: ubuntu-latest
+    if: ${{ needs.get-version.outputs.will-release == 'true' }}
+    needs:
+      - get-version
     steps:
       # Étape 1 : Récupérer le code source
       - name: Checkout code
