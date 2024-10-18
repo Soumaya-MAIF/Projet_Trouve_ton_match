@@ -33,6 +33,10 @@ jobs:
       # Étape 2 : Configurer JDK 17
       - name: Setup Java JDK
         uses: actions/setup-java@v4.4.0
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
 
       # Étape 3 : Construire le projet Java avec Gradle
       - name: Build backend with Gradle
