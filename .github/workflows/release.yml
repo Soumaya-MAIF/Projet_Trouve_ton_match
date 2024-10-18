@@ -48,7 +48,7 @@ jobs:
 
       # Étape 4 : Sauvegarder les artefacts du back-end (le fichier JAR)
       - name: Upload backend artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: backend
           path: build/libs/*.jar
@@ -79,10 +79,10 @@ jobs:
 
       # Étape 5 : Sauvegarder les artefacts du front-end (fichiers de build)
       - name: Upload frontend artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: frontend
-          path: build/
+          path: ./front/build/
 
       # Job pour publier la release sur GitHub
   release:
@@ -92,21 +92,13 @@ jobs:
       steps:
       # Étape 1 : Télécharger les artefacts du back-end
       - name: Download backend artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: backend
-          path: artifacts/
-
-      # Étape 2 : Télécharger les artefacts du front-end
-      - name: Download frontend artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: frontend
           path: artifacts/
 
       # Étape 3 : Créer une archive ZIP des artefacts pour les inclure dans la release
       - name: Zip files artifacts
-        run: zip -r release.zip artifacts/backend/* artifacts/frontend/*
+        run: zip -r frontend.zip artifacts/frontend/*
 
       # Étape 4 : Créer la release sur GitHub
       - name: Create GitHub Release
@@ -120,7 +112,7 @@ jobs:
         run: |
             echo "$CHANGELOG" > changelog.md
             if [ "$PRERELEASE" == "true" ]; then
-              gh release create --prerelease --repo $REPO --target $COMMIT -F changelog.md "v$VERSION" "Auto-generated release"
+              gh release create --prerelease --repo $REPO --target $COMMIT -F changelog.md "v$VERSION" artifacts/backend/* frontend.zip
             else
-              gh release create --repo $REPO --target $COMMIT -F changelog.md "v$VERSION" "Auto-generated release"
+              gh release create --repo $REPO --target $COMMIT -F changelog.md "v$VERSION" artifacts/backend/* frontend.zip
             fi
