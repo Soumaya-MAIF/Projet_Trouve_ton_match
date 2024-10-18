@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - dev
+      - 53-24-mise-en-place-de-la-ci
 
 permissions:
   # Accord de permission pour écrire des contenus dans le dépôt
@@ -17,7 +18,7 @@ jobs:
       # Définir la branche 'main' pour les releases officielles
       release-branches: '^(main)$'
       # Définir la branche 'beta' pour les pre-releases
-      prerelease-branches: "^(dev)$"
+      prerelease-branches: "^(dev|53-24-mise-en-place-de-la-ci)$"
 
  jobs:
   # Job pour construire le back-end Java
