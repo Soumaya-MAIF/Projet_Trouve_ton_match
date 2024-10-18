@@ -65,6 +65,7 @@ jobs:
     if: ${{ needs.get-version.outputs.will-release == 'true' }}
     needs:
       - get-version
+      - Spring test
     steps:
       # Étape 1 : Récupérer le code source
       - name: Checkout code
