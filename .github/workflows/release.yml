@@ -20,7 +20,6 @@ jobs:
       # Définir la branche 'beta' pour les pre-releases
       prerelease-branches: '^(dev|53-24-mise-en-place-de-la-ci)$'
 
- jobs:
   # Job pour construire le back-end Java
   build-backend:
     name: Build Java Backend
