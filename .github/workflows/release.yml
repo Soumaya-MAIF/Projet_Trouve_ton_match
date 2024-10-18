@@ -62,6 +62,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Étape temporaire : Lister les fichiers et répertoires à la racine
+      - name: List files
+        run: ls -R
+
       # Étape 2 : Changer de répertoire vers le bon dossier du projet React
       - name: Change directory to frontend
         run: cd ./ttm/front
