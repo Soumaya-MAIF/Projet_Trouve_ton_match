@@ -9,6 +9,7 @@ on:
 permissions:
   # Accord de permission pour écrire des contenus dans le dépôt
   contents: write
+  
 
 jobs:
   get-version:
@@ -30,11 +31,8 @@ jobs:
         uses: actions/checkout@v2
       
       # Étape 2 : Configurer JDK 17
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.4.0
 
       # Étape 3 : Construire le projet Java avec Gradle
       - name: Build backend with Gradle
@@ -57,10 +55,8 @@ jobs:
         uses: actions/checkout@v2
       
       # Étape 2 : Configurer Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.4
 
       # Étape 3 : Installer les dépendances du front-end
       - name: Install dependencies
