@@ -66,21 +66,16 @@ jobs:
       - name: List files
         run: ls -R
 
-      # Étape 2 : Changer de répertoire vers le bon dossier du projet React
-      - name: Change directory to frontend
-        run: cd ./front
-      
       # Étape 2 : Configurer Node.js
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.0.4
 
-      # Étape 3 : Installer les dépendances du front-end
-      - name: Install dependencies
-        run: npm install
-      
-      # Étape 4 : Construire le projet React
-      - name: Build frontend
-        run: npm run build
+      # Étape 2 : Changer de répertoire vers le bon dossier du projet React
+      - name: Change directory to frontend
+        working-directory: ./front
+        run: |
+          npm install
+          npm run build
 
       # Étape 5 : Sauvegarder les artefacts du front-end (fichiers de build)
       - name: Upload frontend artifact
@@ -89,12 +84,12 @@ jobs:
           name: frontend
           path: build/
 
-  # Job pour publier la release sur GitHub
+      # Job pour publier la release sur GitHub
   release:
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    needs: [build-backend, build-frontend, get-version]
-    steps:
+      name: Create GitHub Release
+      runs-on: ubuntu-latest
+      needs: [build-backend, build-frontend, get-version]
+      steps:
       # Étape 1 : Télécharger les artefacts du back-end
       - name: Download backend artifact
         uses: actions/download-artifact@v3
