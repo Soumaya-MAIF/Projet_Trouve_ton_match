@@ -70,11 +70,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Étape pour donner les permissions d'exécution à gradlew
+      # Étape 2 pour donner les permissions d'exécution à gradlew
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
       
-      # Étape 2 : Configurer JDK 17
+      # Étape 3 : Configurer JDK 17
       - name: Setup Java JDK
         uses: actions/setup-java@v4.4.0
         with:
@@ -82,11 +82,11 @@ jobs:
           distribution: 'temurin'
 
 
-      # Étape 3 : Construire le projet Java avec Gradle
+      # Étape 4 : Construire le projet Java avec Gradle
       - name: Build backend with Gradle
         run: ./gradlew build
 
-      # Étape 4 : Sauvegarder les artefacts du back-end (le fichier JAR)
+      # Étape 5 : Sauvegarder les artefacts du back-end (le fichier JAR)
       - name: Upload backend artifact
         uses: actions/upload-artifact@v4
         with:
@@ -105,22 +105,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Étape temporaire : Lister les fichiers et répertoires à la racine
-      - name: List files
-        run: ls -R
 
       # Étape 2 : Configurer Node.js
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.0.4
 
-      # Étape 2 : Changer de répertoire vers le bon dossier du projet React
+      # Étape 3 : Changer de répertoire vers le bon dossier du projet React
       - name: Change directory to frontend
         working-directory: ./front
         run: |
           npm install
           npm run build
 
-      # Étape 5 : Sauvegarder les artefacts du front-end (fichiers de build)
+      # Étape 4 : Sauvegarder les artefacts du front-end (fichiers de build)
       - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
@@ -139,11 +136,11 @@ jobs:
         with:
           path: artifacts/
 
-      # Étape 3 : Créer une archive ZIP des artefacts pour les inclure dans la release
+      # Étape 2 : Créer une archive ZIP des artefacts pour les inclure dans la release
       - name: Zip files artifacts
         run: zip -r frontend.zip artifacts/frontend/*
 
-      # Étape 4 : Créer la release sur GitHub
+      # Étape 3 : Créer la release sur GitHub
       - name: Create GitHub Release
         env:
           VERSION: "${{ needs.get-version.outputs.version }}"
