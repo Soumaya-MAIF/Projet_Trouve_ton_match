@@ -95,14 +95,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: backend
-          path: artifacts/backend
+          path: artifacts/
 
       # Étape 2 : Télécharger les artefacts du front-end
       - name: Download frontend artifact
         uses: actions/download-artifact@v3
         with:
           name: frontend
-          path: artifacts/frontend
+          path: artifacts/
 
       # Étape 3 : Créer une archive ZIP des artefacts pour les inclure dans la release
       - name: Zip files artifacts
