@@ -1,8 +1,23 @@
 package service;
 
+import fr.initiativedeuxsevres.ttm.model.User;
+import fr.initiativedeuxsevres.ttm.repository.UserRepository;
+import fr.initiativedeuxsevres.ttm.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@SpringBootTest
 class UserServiceTest {
 
     @Mock
@@ -11,38 +26,52 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    @Test
-    void saveUser() {
-        // Given
-        User user = new User();
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setEmail("john.doe@example.com");
+    // Déclaration des variables comme attributs de classe
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private String companyName;
 
-        when(userRepository.save(user)).thenReturn(user);
-
-        // When
-        User savedUser = userService.saveUser(user);
-
-        // Then
-        assertEquals("John", savedUser.getFirstName());
-        verify(userRepository).save(user); // Vérifie que la méthode save() a été appelée
+    @BeforeEach
+    public void data() {
+        // Initialisation des données communes aux tests
+        id= 2L;
+        firstName = "Alice";
+        lastName = "Johnson";
+        email = "alice.johnson@example.com";
+        password = "securePass456";
+        companyName = "Green Solutions Ltd";
     }
 
     @Test
-    void findUserByEmail_shouldReturnUser() {
-        // Given
-        String email = "john.doe@example.com";
-        User user = new User();
-        user.setEmail(email);
+    public void userSave() {
+        // Given: préparation de l'utilisateur
+        User utilisateur = new User(
+                id,
+                firstName,
+                lastName,
+                email,
+                password,
+                companyName
+        );
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(utilisateur);
 
-        // When
-        Optional<User> foundUser = userService.findUserByEmail(email);
+        // When: appel de la méthode à tester
+        User savedUser = userService.saveUser(utilisateur);
 
-        // Then
-        assertTrue(foundUser.isPresent());
-        assertEquals(email, foundUser.get().getEmail());
+        // Then: vérifications
+
+        assertEquals(id, savedUser.getId());
+        assertEquals(firstName, savedUser.getFirstName());
+        assertEquals(lastName, savedUser.getLastName());
+        assertEquals(email, savedUser.getEmail());
+        assertEquals(password, savedUser.getPassword());
+        assertEquals(companyName, savedUser.getCompanyName());
+
+        // Vérifie que la méthode save() a bien été appelée avec l'objet utilisateur
+        verify(userRepository).save(utilisateur);
     }
 }

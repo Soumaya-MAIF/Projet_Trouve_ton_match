@@ -1,7 +1,9 @@
 package fr.initiativedeuxsevres.ttm.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
@@ -11,13 +13,17 @@ import java.time.LocalDate;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Nullable
     private Long id;
-
+    @Getter
     private String firstName;
+    @Getter
     private String lastName;
+    @Getter
     private String email;
+    @Getter
     private String password;
+    @Getter
     private String companyName;
     private String initiativePlatform;
     private LocalDate activityStartDate;
@@ -29,4 +35,9 @@ public class User {
 
     public User() {
     }
+
+    public User(Long id, String firstName, String lastName, String email, String password, String companyName) {
+    }
+
+
 }
