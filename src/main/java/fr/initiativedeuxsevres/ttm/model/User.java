@@ -2,9 +2,7 @@ package fr.initiativedeuxsevres.ttm.model;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -12,6 +10,8 @@ import java.time.LocalDate;
 @Data
 @Builder
 @Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -36,4 +36,7 @@ public class User {
     private String availability;
 
 
+    public User(String email) {
+        this.email = email;
+    }
 }

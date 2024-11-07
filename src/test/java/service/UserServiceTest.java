@@ -13,6 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -35,6 +38,13 @@ class UserServiceTest {
     private String email;
     private String password;
     private String companyName;
+    private String initiativePlatform;
+    private LocalDate activityStartDate;
+    private String activityDomain;
+    private String activityDescription;
+    private String potentialNeeds;
+    private String activityLocation;
+    private String availability;
 
     @BeforeEach
     public void data() {
@@ -45,6 +55,13 @@ class UserServiceTest {
         email = "alice.johnson@example.com";
         password = "securePass456";
         companyName = "Green Solutions Ltd";
+        initiativePlatform = "SomePlatform";
+        activityStartDate = LocalDate.of(2022, 1, 1);
+        activityDomain = "Technology";
+        activityDescription = "Innovative solutions for green energy.";
+        potentialNeeds = "Funding, Partnerships";
+        activityLocation = "Paris";
+        availability = "Immediate";
     }
 
     @Test
@@ -57,15 +74,13 @@ class UserServiceTest {
                 .email(email)
                 .password(password)
                 .companyName(companyName)
+                .activityStartDate(activityStartDate)
+                .activityDomain(activityDomain)
+                .activityDescription(activityDescription)
+                .potentialNeeds(potentialNeeds)
+                .activityLocation(activityLocation)
+                .availability(availability)
                 .build();
-//                new User(;
-//                id,
-//                firstName,
-//                lastName,
-//                email,
-//                password,
-//                companyName
-//        );
 
         when(userRepository.save(any(User.class))).thenReturn(user);
 
@@ -84,4 +99,39 @@ class UserServiceTest {
         // Vérifie que la méthode save() a bien été appelée avec l'objet utilisateur
         verify(userRepository).save(user);
     }
+
+    @Test
+    public void updateUser() {
+
+
+        // Given: préparation de l'utilisateur existant
+        User existingUser = User.builder()
+                .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .password(password)
+                .companyName(companyName)
+                .activityStartDate(activityStartDate)
+                .activityDomain(activityDomain)
+                .activityDescription(activityDescription)
+                .potentialNeeds(potentialNeeds)
+                .activityLocation(activityLocation)
+                .availability(availability)
+                .build();
+
+        // Nouvelles données
+        String newEmail = "alice.newemail@example.com";
+
+        // Ajout du comportement pour le dépôt
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(existingUser);
+        // When: appel de la méthode à tester
+        User updatedUser = userService.updateUserEmail(id, newEmail);
+
+        // Then: vérifications
+        assertEquals(newEmail, updatedUser.getEmail());
+        verify(userRepository).save(existingUser);
+    }
+
 }
