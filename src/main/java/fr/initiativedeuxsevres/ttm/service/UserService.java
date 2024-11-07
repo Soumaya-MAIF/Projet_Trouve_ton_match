@@ -1,7 +1,8 @@
 package fr.initiativedeuxsevres.ttm.service;
+import fr.initiativedeuxsevres.ttm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import fr.initiativedeuxsevres.ttm.model.User;
-import fr.initiativedeuxsevres.ttm.repository.UserRepository;
+
 import org.springframework.stereotype.Service;
 
 

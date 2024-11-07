@@ -11,13 +11,15 @@ import org.mockito.Mock;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
+@ContextConfiguration
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
@@ -48,19 +50,27 @@ class UserServiceTest {
     @Test
     public void userSave() {
         // Given: préparation de l'utilisateur
-        User utilisateur = new User(
-                id,
-                firstName,
-                lastName,
-                email,
-                password,
-                companyName
-        );
+        User user = User.builder()
+                .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .password(password)
+                .companyName(companyName)
+                .build();
+//                new User(;
+//                id,
+//                firstName,
+//                lastName,
+//                email,
+//                password,
+//                companyName
+//        );
 
-        when(userRepository.save(any(User.class))).thenReturn(utilisateur);
+        when(userRepository.save(any(User.class))).thenReturn(user);
 
         // When: appel de la méthode à tester
-        User savedUser = userService.saveUser(utilisateur);
+        User savedUser = userService.saveUser(user);
 
         // Then: vérifications
 
@@ -72,6 +82,6 @@ class UserServiceTest {
         assertEquals(companyName, savedUser.getCompanyName());
 
         // Vérifie que la méthode save() a bien été appelée avec l'objet utilisateur
-        verify(userRepository).save(utilisateur);
+        verify(userRepository).save(user);
     }
 }

@@ -1,9 +1,10 @@
 package fr.initiativedeuxsevres.ttm.repository;
 
 import fr.initiativedeuxsevres.ttm.model.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public class UserRepository {
-    public User save(User user) {
-        return user;
-    }
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
 }
